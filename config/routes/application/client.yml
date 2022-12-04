@@ -10,6 +10,13 @@ app_client_single:
   requirements:
     id: '\d+'
 
+app_client_single_cart:
+  path: /clients/{id}/carts
+  controller: App\Controller\ClientController::get_client_cart
+  methods: GET
+  requirements:
+    id: '\d+'
+
 app_client_add:
   path: /clients
   controller: App\Controller\ClientController::create_client

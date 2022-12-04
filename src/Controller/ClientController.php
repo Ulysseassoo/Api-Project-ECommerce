@@ -17,6 +17,12 @@ class ClientController extends AbstractController
         $this->clientRepository = $clientRepository;
     }
 
+    public function get_client_cart(Client $client): Response 
+    {
+        $cart = $client->getCart();
+        return $this->buildDataResponse($cart);
+    }
+
     public function get_clients(): Response
     {
         $categories = $this->clientRepository->findAll();
