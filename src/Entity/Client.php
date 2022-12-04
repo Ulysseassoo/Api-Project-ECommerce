@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 class Client
@@ -14,24 +16,30 @@ class Client
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['default'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['default'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['default'])]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $birthDate = null;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Address::class, orphanRemoval: true)]
+    #[Groups(['default'])]
     private Collection $addresses;
 
     #[ORM\OneToOne(mappedBy: 'client', cascade: ['persist', 'remove'])]
+    #[Groups(['cart'])]
     private ?Cart $cart = null;
 
     public function __construct()

@@ -1,0 +1,30 @@
+app_client_list:
+  path: /clients
+  controller: App\Controller\ClientController::get_clients
+  methods: GET
+
+app_client_single:
+  path: /clients/{id}
+  controller: App\Controller\ClientController::get_client
+  methods: GET
+  requirements:
+    id: '\d+'
+
+app_client_add:
+  path: /clients
+  controller: App\Controller\ClientController::create_client
+  methods: POST
+
+app_client_modify:
+  path: /clients/{id}
+  controller: App\Controller\ClientController::update_client
+  methods: PUT
+  requirements:
+    id: '\d+'
+
+app_client_delete:
+  path: /clients/{id}
+  controller: App\Controller\ClientController::delete_client
+  methods: DELETE
+  requirements:
+    id: '\d+'
