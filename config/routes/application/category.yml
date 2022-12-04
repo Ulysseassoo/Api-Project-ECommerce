@@ -1,0 +1,23 @@
+app_category_list:
+  path: /categories
+  controller: App\Controller\CategoryController::get_categories
+  methods: GET
+
+app_category_add:
+  path: /categories
+  controller: App\Controller\CategoryController::create_category
+  methods: POST
+
+app_category_modify:
+  path: /categories/{id}
+  controller: App\Controller\CategoryController::update_category
+  methods: PUT
+  requirements:
+    id: '\d+'
+
+app_category_delete:
+  path: /categories/{id}
+  controller: App\Controller\CategoryController::delete_category
+  methods: DELETE
+  requirements:
+    id: '\d+'
