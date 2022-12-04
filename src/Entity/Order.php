@@ -6,6 +6,7 @@ use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -14,25 +15,37 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?float $total = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['default'])]
     private ?string $code = null;
 
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?int $payment_method = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['default'])]
     private ?string $address_used = null;
 
     #[ORM\OneToMany(mappedBy: 'command', targetEntity: OrderEntry::class)]
+    #[Groups(['order'])]
     private Collection $orderEntries;
+
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['client'])]
+    private ?Client $client = null;
 
     public function __construct()
     {
@@ -130,6 +143,18 @@ class Order
                 $orderEntry->setCommand(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }

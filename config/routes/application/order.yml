@@ -1,0 +1,4 @@
+app_order_list_by_client:
+  path: /orders
+  controller: App\Controller\OrderController::get_client_orders
+  methods: GET
