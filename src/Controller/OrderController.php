@@ -23,4 +23,9 @@ class OrderController extends AbstractController
         return $this->buildDataResponse($orders);
     }
 
+    public function get_order_with_orderEntry(Order $order): Response
+    {
+        return $this->buildDataResponse($order, "order");
+    }
+
 }

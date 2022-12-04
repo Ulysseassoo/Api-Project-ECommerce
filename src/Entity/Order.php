@@ -15,27 +15,27 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['default'])]
+    #[Groups(['default', 'order'])]
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['default'])]
+    #[Groups(['default', 'order'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['default'])]
+    #[Groups(['default', 'order'])]
     private ?float $total = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['default'])]
+    #[Groups(['default', 'order'])]
     private ?string $code = null;
 
     #[ORM\Column]
-    #[Groups(['default'])]
+    #[Groups(['default', 'order'])]
     private ?int $payment_method = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['default'])]
+    #[Groups(['default', 'order'])]
     private ?string $address_used = null;
 
     #[ORM\OneToMany(mappedBy: 'command', targetEntity: OrderEntry::class)]

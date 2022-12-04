@@ -2,3 +2,10 @@ app_order_list_by_client:
   path: /orders
   controller: App\Controller\OrderController::get_client_orders
   methods: GET
+
+app_order_single:
+  path: /orders/{id}
+  controller: App\Controller\OrderController::get_order_with_orderEntry
+  methods: GET
+  requirements:
+    id: '\d+'
