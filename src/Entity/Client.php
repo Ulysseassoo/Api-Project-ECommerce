@@ -34,7 +34,7 @@ class Client
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $birthDate = null;
 
-    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Address::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Address::class, orphanRemoval: true, cascade: ['persist'])]
     #[Groups(['default'])]
     private Collection $addresses;
 
