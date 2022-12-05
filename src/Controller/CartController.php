@@ -55,10 +55,12 @@ class CartController extends AbstractController
             $productCart->setCart($cart);
             $productCart->setProduct($product);
             $productCart->setQuantity(1);
+            $product->setQuantity($product->getQuantity() - 1);
+            $this->productRepository->save($product, true);
             $this->productCartRepository->save($productCart, true);
         }
 
-// Remove Add error bug
+        //TODO Add error bug
         $cartProducts = $cart->getProductCarts();
         $total = $this->cartRepository->getTotalAmount($cart);
         $cart->setTotalAmount($total);
@@ -115,6 +117,26 @@ class CartController extends AbstractController
 
 
         return $this->buildDataResponse($cartFormatted);
+    }
+
+    public function delete_cart(Cart $cart): Response
+    {
+        if ($cart === null) {
+            return $this->buildNotFoundResponse();
+        }
+
+        $cartProducts = $cart->getProductCarts();
+
+        if(count($cartProducts) > 0) {
+            for ($i=0; $i < count($cartProducts); $i++) { 
+                $entity = $cartProducts[$i];
+                $this->productCartRepository->remove($entity, true);
+            }
+        }
+        
+        $this->cartRepository->remove($cart, true);
+
+        return $this->buildEmptyResponse($cart);
     }
 
 }

@@ -13,3 +13,11 @@ app_cart_remove_product:
   requirements:
     id: '\d+'
     product_id: '\d+'
+
+app_cart_delete:
+  path: /carts/{id}
+  controller: App\Controller\CartController::delete_cart
+  methods: DELETE
+  requirements:
+    id: '\d+'
+    product_id: '\d+'

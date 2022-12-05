@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
-
+// TODO PRODUCT
 class ProductController extends AbstractController
 {
     const CONTEXT = 'product';
