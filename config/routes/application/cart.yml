@@ -20,4 +20,10 @@ app_cart_delete:
   methods: DELETE
   requirements:
     id: '\d+'
-    product_id: '\d+'
+
+app_cart_validate:
+  path: /carts/{id}/validate
+  controller: App\Controller\CartController::validate_cart
+  methods: PATCH
+  requirements:
+    id: '\d+'

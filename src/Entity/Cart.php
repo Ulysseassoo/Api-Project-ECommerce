@@ -25,7 +25,7 @@ class Cart
     #[Groups(['default'])]
     private ?int $totalAmount = null;
 
-    #[ORM\OneToOne(inversedBy: 'cart', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'cart', cascade: ['persist'])]
     #[Groups(['client'])]
     private ?Client $client = null;
 

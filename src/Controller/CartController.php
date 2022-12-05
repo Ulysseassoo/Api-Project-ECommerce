@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Cart;
 use App\Entity\ProductCart;
 use App\Entity\Product;
+use App\Entity\Order;
+use App\Entity\OrderEntry;
 use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\CartRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductCartRepository;
+use App\Repository\OrderRepository;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 
@@ -21,12 +24,14 @@ class CartController extends AbstractController
     private CartRepository $cartRepository;
     private ProductRepository $productRepository;
     private ProductCartRepository $productCartRepository;
+    private OrderRepository $orderRepository;
 
-    public function __construct(CartRepository $cartRepository, ProductRepository $productRepository, ProductCartRepository $productCartRepository)
+    public function __construct(CartRepository $cartRepository, ProductRepository $productRepository, ProductCartRepository $productCartRepository, OrderRepository $orderRepository)
     {
         $this->cartRepository = $cartRepository;
         $this->productRepository = $productRepository;
         $this->productCartRepository = $productCartRepository;
+        $this->orderRepository = $orderRepository;
     }
 
     public function add_product_cart(Request $request): Response
@@ -119,12 +124,8 @@ class CartController extends AbstractController
         return $this->buildDataResponse($cartFormatted);
     }
 
-    public function delete_cart(Cart $cart): Response
+    public function remove_cart(Cart $cart): void
     {
-        if ($cart === null) {
-            return $this->buildNotFoundResponse();
-        }
-
         $cartProducts = $cart->getProductCarts();
 
         if(count($cartProducts) > 0) {
@@ -133,10 +134,59 @@ class CartController extends AbstractController
                 $this->productCartRepository->remove($entity, true);
             }
         }
-        
+
         $this->cartRepository->remove($cart, true);
 
+    }
+
+    public function delete_cart(Cart $cart): Response
+    {
+        if ($cart === null) {
+            return $this->buildNotFoundResponse();
+        }
+
+        self::remove_cart($cart);
+        
         return $this->buildEmptyResponse($cart);
+    }
+
+    // TODO When deleting first time
+    public function validate_cart(Cart $cart): Response
+    {
+        if ($cart === null) {
+            return $this->buildNotFoundResponse();
+        }
+
+        $cartProducts = $cart->getProductCarts();
+        $client = $cart->getClient();
+        $total = $cart->getTotalAmount();
+        $address = $client->getAddresses()[0];
+
+        $order = new Order();
+        $order->setCreatedAt(new \DateTimeImmutable());
+        $order->setTotal($total);
+        $order->setCode("0000");
+        $order->setPaymentMethod(1);
+        $order->setAddressUsed("{$address->getStreet()}, {$address->getCity()} {$address->getPostalCode()}");
+        $order->setClient($client);
+
+        for ($i=0; $i < count($cartProducts) ; $i++) { 
+            $product = $cartProducts[$i]->getProduct();
+            $orderEntry = new OrderEntry();
+            $orderEntry->setName($product->getName());
+            $orderEntry->setQuantity($cartProducts[$i]->getQuantity());
+            $orderEntry->setPrice($product->getPrice());
+            $orderEntry->setShortDescription($product->getShortDescription());
+            $orderEntry->setDescription($product->getDescription());
+            $orderEntry->setCreatedAt(new \DateTimeImmutable());
+            $order->addOrderEntry($orderEntry);
+        }
+
+        $this->orderRepository->save($order, true);
+
+        self::remove_cart($cart);
+
+        return $this->buildEmptyResponse();
     }
 
 }

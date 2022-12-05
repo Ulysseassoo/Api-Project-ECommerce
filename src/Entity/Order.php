@@ -38,7 +38,7 @@ class Order
     #[Groups(['default', 'order'])]
     private ?string $address_used = null;
 
-    #[ORM\OneToMany(mappedBy: 'command', targetEntity: OrderEntry::class)]
+    #[ORM\OneToMany(mappedBy: 'command', targetEntity: OrderEntry::class, cascade: ['persist'])]
     #[Groups(['order'])]
     private Collection $orderEntries;
 
