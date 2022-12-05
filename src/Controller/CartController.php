@@ -58,7 +58,7 @@ class CartController extends AbstractController
             $this->productCartRepository->save($productCart, true);
         }
 
-
+// Remove Add error bug
         $cartProducts = $cart->getProductCarts();
         $total = $this->cartRepository->getTotalAmount($cart);
         $cart->setTotalAmount($total);
@@ -73,31 +73,48 @@ class CartController extends AbstractController
         return $this->buildDataResponse($cartFormatted);
     }
 
-    // public function remove_product_cart(Cart $cart, Product $product): Response
-    // {
-    //     if(!$cart) {
-    //         // TODO Get user connected and create a cart
-    //         return $this->buildNotFoundResponse("This cart doesn't exist.");
-    //     }
-    //     if(!$product) {
-    //         return $this->buildNotFoundResponse("This product doesn't exist.");
-    //     }
+    public function remove_product_cart(Request $request): Response
+    {
+        $product = $this->productRepository->find($request->get('product_id'));
+        $cart = $this->cartRepository->find($request->get('id'));
 
-    //     $findProduct = $this->cartRepository->findProduct($cart, $product);
+        if(!$cart) {
+            // TODO Get user connected and create a cart
+            return $this->buildNotFoundResponse("This cart doesn't exist.");
+        }
+        if(!$product) {
+            return $this->buildNotFoundResponse("This product doesn't exist.");
+        }
 
-    //     if($findProduct) {
-    //         $product->setQuantity($product->getQuantity() - 1);
-    //         $this->productRepository->save($product, true);
-    //     } else {
-    //         $cart->addProduct($product);
-    //     }
+        $findProduct = $this->cartRepository->findProduct($cart, $product);
+        
+        if($findProduct != null) {
+            $findProduct->setQuantity($findProduct->getQuantity() - 1);
+            $product->setQuantity($product->getQuantity() + 1);
+            $this->productRepository->save($product, true);
+            if($findProduct->getQuantity() == 0) {
+                $this->productCartRepository->remove($findProduct, true);
+            }
+            else {
+                $this->productCartRepository->save($findProduct, true);
+            }
+        } else {
+            return $this->buildNotFoundResponse("This item does not exist in the cart.");
+        }
 
-    //     $total = $this->cartRepository->getTotalAmount($cart);
-    //     $cart->setTotalAmount($total);
-    //     $this->cartRepository->save($cart, true);
+
+        $cartProducts = $cart->getProductCarts();
+        $total = $this->cartRepository->getTotalAmount($cart);
+        $cart->setTotalAmount($total);
+        $this->cartRepository->save($cart, true);
+
+        $cartFormatted = array(
+            "cart" => $cart,
+            "products" => $cartProducts,
+        );
 
 
-    //     return $this->buildDataResponse($cart);
-    // }
+        return $this->buildDataResponse($cartFormatted);
+    }
 
 }
