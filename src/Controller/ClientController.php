@@ -20,7 +20,15 @@ class ClientController extends AbstractController
     public function get_client_cart(Client $client): Response 
     {
         $cart = $client->getCart();
-        return $this->buildDataResponse($cart);
+        $cartProducts = $cart->getProductCarts();
+
+        
+        $cartFormatted = array(
+            "cart" => $cart,
+            "products" => $cartProducts,
+        );
+
+        return $this->buildDataResponse($cartFormatted);
     }
 
     public function get_clients(): Response
