@@ -1,6 +1,14 @@
-app_cart_single:
+app_cart_add_product:
   path: /carts/{id}/products/{product_id}/add-to-cart
   controller: App\Controller\CartController::add_product_cart
+  methods: PATCH
+  requirements:
+    id: '\d+'
+    product_id: '\d+'
+
+app_cart_remove_product:
+  path: /carts/{id}/products/{product_id}/remove-from-cart
+  controller: App\Controller\CartController::remove_product_cart
   methods: PATCH
   requirements:
     id: '\d+'

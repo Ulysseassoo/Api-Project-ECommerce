@@ -25,17 +25,18 @@ class Cart
     #[Groups(['default'])]
     private ?int $totalAmount = null;
 
-    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'cart')]
-    #[Groups(['default'])]
-    private Collection $products;
-
     #[ORM\OneToOne(inversedBy: 'cart', cascade: ['persist', 'remove'])]
     #[Groups(['client'])]
     private ?Client $client = null;
 
+    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: ProductCart::class)]
+    private Collection $productCarts;
+
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        $this->productCarts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -67,33 +68,6 @@ class Cart
         return $this;
     }
 
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    public function addProduct(Product $product): self
-    {
-        if (!$this->products->contains($product)) {
-            $this->products->add($product);
-            $product->addCart($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(Product $product): self
-    {
-        if ($this->products->removeElement($product)) {
-            $product->removeCart($this);
-        }
-
-        return $this;
-    }
-
     public function getClient(): ?Client
     {
         return $this->client;
@@ -105,4 +79,35 @@ class Cart
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, ProductCart>
+     */
+    public function getProductCarts(): Collection
+    {
+        return $this->productCarts;
+    }
+
+    public function addProductCart(ProductCart $productCart): self
+    {
+        if (!$this->productCarts->contains($productCart)) {
+            $this->productCarts->add($productCart);
+            $productCart->setCart($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductCart(ProductCart $productCart): self
+    {
+        if ($this->productCarts->removeElement($productCart)) {
+            // set the owning side to null (unless already changed)
+            if ($productCart->getCart() === $this) {
+                $productCart->setCart(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

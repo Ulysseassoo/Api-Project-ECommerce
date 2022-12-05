@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Cart;
 use App\Entity\Product;
+use App\Entity\ProductCart;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,13 +41,13 @@ class CartRepository extends ServiceEntityRepository
         }
     }
 
-    public function findProduct(Cart $entity, Product $product): bool
+    public function findProduct(Cart $entity, Product $product): ?ProductCart
     {
-        $isProduct = false;
-        $cartProducts = $entity->getProducts();
+        $isProduct = null;
+        $cartProducts = $entity->getProductCarts();
         for($i = 0; $i < count($cartProducts); $i++) {
-            if($cartProducts[$i]->getId() == $product->getId()) {
-                $isProduct = true;
+            if($cartProducts[$i]->getProduct()->getId() == $product->getId()) {
+                $isProduct = $cartProducts[$i];
                 break;
             }
         }
@@ -55,10 +56,11 @@ class CartRepository extends ServiceEntityRepository
 
     public function getTotalAmount(Cart $entity): int
     {
-        $cartProducts = $entity->getProducts();
+        $cartProducts = $entity->getProductCarts();
         $total = 0;
         for($i = 0; $i < count($cartProducts); $i++) {
-            $total += $cartProducts[$i]->getQuantity() * $cartProducts[$i]->getPrice();
+            $product = $cartProducts[$i]->getProduct();
+            $total += $cartProducts[$i]->getQuantity() * $product->getPrice();
         }
         return $total;
     }

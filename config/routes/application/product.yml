@@ -28,10 +28,3 @@ app_product_delete:
   methods: DELETE
   requirements:
     id: '\d+'
-
-app_product_add_to_cart:
-  path: /products/{id}/add-to-cart
-  controller: App\Controller\ProductController::addToCart
-  methods: PATCH
-  requirements:
-    id: '\d+'
