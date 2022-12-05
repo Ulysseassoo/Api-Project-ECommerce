@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Cart;
+use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +38,29 @@ class CartRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findProduct(Cart $entity, Product $product): bool
+    {
+        $isProduct = false;
+        $cartProducts = $entity->getProducts();
+        for($i = 0; $i < count($cartProducts); $i++) {
+            if($cartProducts[$i]->getId() == $product->getId()) {
+                $isProduct = true;
+                break;
+            }
+        }
+        return $isProduct;
+    }
+
+    public function getTotalAmount(Cart $entity): int
+    {
+        $cartProducts = $entity->getProducts();
+        $total = 0;
+        for($i = 0; $i < count($cartProducts); $i++) {
+            $total += $cartProducts[$i]->getQuantity() * $cartProducts[$i]->getPrice();
+        }
+        return $total;
     }
 
 //    /**

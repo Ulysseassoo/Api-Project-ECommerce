@@ -6,6 +6,7 @@ use App\Repository\CartRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CartRepository::class)]
 class Cart
@@ -13,18 +14,23 @@ class Cart
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?int $totalAmount = null;
 
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'cart')]
+    #[Groups(['default'])]
     private Collection $products;
 
     #[ORM\OneToOne(inversedBy: 'cart', cascade: ['persist', 'remove'])]
+    #[Groups(['client'])]
     private ?Client $client = null;
 
     public function __construct()

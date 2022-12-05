@@ -1,0 +1,7 @@
+app_cart_single:
+  path: /carts/{id}/products/{product_id}/add-to-cart
+  controller: App\Controller\CartController::add_product_cart
+  methods: PATCH
+  requirements:
+    id: '\d+'
+    product_id: '\d+'

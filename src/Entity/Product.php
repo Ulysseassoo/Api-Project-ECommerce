@@ -6,6 +6,7 @@ use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -13,25 +14,32 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['default'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
+    #[Groups(['default'])]
     private ?int $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['default'])]
     private ?string $shortDescription = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['default'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['default'])]
     private ?Category $category = null;
 
     #[ORM\ManyToMany(targetEntity: Cart::class, inversedBy: 'products')]
